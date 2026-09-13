@@ -32,5 +32,23 @@ jobs:
         run: xcodebuild -version && swift --version
 
       - name: Test OverloadKit
-        working-directory: Packages/OverloadKit
         run: swift test
+
+  template-build:
+    name: TemplateApp Build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate and build TemplateApp
+        working-directory: Apps/TemplateApp
+        run: |
+          xcodegen generate
+          xcodebuild build \
+            -project TemplateApp.xcodeproj \
+            -scheme TemplateApp \
+            -destination 'generic/platform=iOS Simulator' \
+            -quiet
