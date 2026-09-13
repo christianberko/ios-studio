@@ -1,0 +1,57 @@
+name: TemplateApp
+options:
+  bundleIdPrefix: com.christianberko
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    TARGETED_DEVICE_FAMILY: "1"
+packages:
+  # Local path while TemplateApp lives inside ios-studio.
+  # Scaffold rewrites this to a git URL for new consumer repos.
+  OverloadKit:
+    path: ../..
+targets:
+  TemplateApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: TemplateApp
+    dependencies:
+      - package: OverloadKit
+        product: OverloadKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.christianberko.templateapp
+        PRODUCT_NAME: TemplateApp
+        GENERATE_INFOPLIST_FILE: YES
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: TemplateApp
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        SWIFT_STRICT_CONCURRENCY: complete
+  TemplateAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: TemplateAppTests
+    dependencies:
+      - target: TemplateApp
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.christianberko.templateapp.tests
+schemes:
+  TemplateApp:
+    build:
+      targets:
+        TemplateApp: all
+        TemplateAppTests: [test]
+    test:
+      targets:
+        - TemplateAppTests

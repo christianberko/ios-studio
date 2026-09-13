@@ -1,0 +1,51 @@
+name: Scaffold App
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "PascalCase app name (e.g. HabitKit)"
+        required: true
+        type: string
+      repo_name:
+        description: "GitHub repo name (e.g. habit-kit)"
+        required: true
+        type: string
+      visibility:
+        description: "New repository visibility"
+        required: true
+        type: choice
+        options:
+          - private
+          - public
+        default: private
+
+permissions:
+  contents: read
+
+jobs:
+  scaffold:
+    name: Scaffold ${{ inputs.app_name }}
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: brew install xcodegen
+
+      - name: Scaffold app and create repo
+        env:
+          GH_TOKEN: ${{ secrets.SCAFFOLD_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "Missing secret SCAFFOLD_TOKEN."
+            echo "Create a PAT that can create repositories under your account,"
+            echo "then add it as a repository secret named SCAFFOLD_TOKEN."
+            exit 1
+          fi
+          chmod +x Tools/scaffold/scaffold.sh
+          ./Tools/scaffold/scaffold.sh \
+            "${{ inputs.app_name }}" \
+            "${{ inputs.repo_name }}" \
+            "${{ inputs.visibility }}"
