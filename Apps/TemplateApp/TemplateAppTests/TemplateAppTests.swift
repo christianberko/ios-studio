@@ -3,5 +3,10 @@ import Testing
 
 @Test
 func appDependsOnOverloadKit() {
-    #expect(OverloadKit.version == "0.1.0")
+    #expect(OverloadKit.version == "0.2.0")
+}
+
+@Test
+func appCanFormatSharedMassValues() {
+    #expect(Mass(kilograms: 60).formatted(unit: .pounds, fractionDigits: 0) == "132 lb")
 }

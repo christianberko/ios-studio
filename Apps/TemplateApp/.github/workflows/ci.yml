@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: swiftlint lint --strict --config .swiftlint.yml
+
+  build-test:
+    name: Build and Test
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authorize private OverloadKit (optional)
+        env:
+          OVERLOADKIT_TOKEN: ${{ secrets.OVERLOADKIT_TOKEN }}
+        run: |
+          if [ -n "${OVERLOADKIT_TOKEN}" ]; then
+            git config --global url."https://x-access-token:${OVERLOADKIT_TOKEN}@github.com/".insteadOf "https://github.com/"
+          fi
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate, build, and test
+        run: |
+          xcodegen generate
+          xcodebuild test \
+            -project TemplateApp.xcodeproj \
+            -scheme TemplateApp \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -quiet
