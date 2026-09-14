@@ -1,0 +1,27 @@
+included:
+  - .
+excluded:
+  - .build
+  - DerivedData
+  - .swiftpm
+  - "*.xcodeproj"
+
+opt_in_rules:
+  - empty_count
+  - first_where
+  - sorted_first_last
+
+disabled_rules:
+  - trailing_whitespace
+
+line_length:
+  warning: 120
+  error: 150
+
+identifier_name:
+  min_length:
+    warning: 2
+  excluded:
+    - id
+    - x
+    - y

@@ -99,6 +99,13 @@ open ${APP_NAME}.xcodeproj
 \`\`\`
 
 Depends on **OverloadKit** via SPM (\`${KIT_URL}\`, branch \`main\`).
+
+## CI
+
+PRs run Lint + Build and Test (see \`.github/workflows/ci.yml\`).
+
+If \`ios-studio\` is private, add a repo secret **\`OVERLOADKIT_TOKEN\`** (PAT with \`repo\` read
+access to ios-studio) so SPM can resolve the package on GitHub Actions.
 EOF
 
 echo "→ Generating Xcode project"
