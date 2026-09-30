@@ -8,8 +8,9 @@ Factory plumbing is in place. The next valuable work needs **your** product call
 - [x] `main` branch protection with those checks
 - [x] TemplateApp gold master + Scaffold App Action
 - [x] Verified scaffold (`test-sdk` / TestApp)
-- [x] Kit foundation slice: units, spacing, key-value store, logging
+- [x] `Mass` formatting upgrades (0.2.0)
 - [x] Consumer-repo CI + SwiftLint baked into the template
+- [x] Tagged kit releases; scaffolds pin a version instead of `main`
 
 ## Waiting on you (when you're home)
 
@@ -21,7 +22,6 @@ Factory plumbing is in place. The next valuable work needs **your** product call
 
 ## Good follow-ons after the first app exists
 
-- Tag OverloadKit releases (`0.2.0`, …) instead of always tracking `branch: main`
 - Grow kit modules from real reuse (theme, navigation shell, persistence models)
 - Delete or archive `test-sdk` once you’re done poking at it
 - Optional: DocC for OverloadKit once the surface stabilizes

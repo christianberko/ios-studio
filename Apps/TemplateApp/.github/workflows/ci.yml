@@ -42,8 +42,21 @@ jobs:
       - name: Generate, build, and test
         run: |
           xcodegen generate
+          # Runner images change their simulator lineup, so pick any available iPhone instead of a fixed name.
+          SIM_ID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          ios = [(runtime, d) for runtime, ds in devices.items() if "iOS" in runtime for d in ds]
+          iphones = [d for _, d in sorted(ios, key=lambda pair: pair[0], reverse=True) if d["name"].startswith("iPhone")]
+          print(iphones[0]["udid"] if iphones else "")
+          ')
+          if [ -z "$SIM_ID" ]; then
+            echo "No available iPhone simulator on this runner." >&2
+            xcrun simctl list devices available
+            exit 1
+          fi
           xcodebuild test \
             -project TemplateApp.xcodeproj \
             -scheme TemplateApp \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -destination "id=$SIM_ID" \
             -quiet

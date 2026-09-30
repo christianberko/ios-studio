@@ -3,7 +3,7 @@ included:
   - Apps
   - Package.swift
 excluded:
-  - .build
+  - "**/.build"
   - "**/DerivedData"
   - "**/.swiftpm"
   - "Apps/**/*.xcodeproj"

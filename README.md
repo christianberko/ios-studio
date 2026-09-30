@@ -16,25 +16,28 @@ CHANGELOG.md          # kit-facing changes
 
 ## OverloadKit (0.2.0)
 
-Shared building blocks intended to grow from real apps:
+Shared building blocks. Code moves in here only once a second app needs it.
 
 - `Mass` + fixed formatting
-- `LayoutSpacing`
-- `KeyValueStore` (`UserDefaultsStore`, `InMemoryKeyValueStore`)
-- `KitLog`
 
 ## Consumer apps
 
 New apps are **separate GitHub repos**, not folders that stay here forever.
 
-They depend on the kit like this (XcodeGen / SPM):
+They depend on a tagged kit release (XcodeGen / SPM):
 
 ```yaml
 packages:
   OverloadKit:
     url: https://github.com/christianberko/ios-studio.git
-    branch: main
+    minorVersion: 0.2.0
 ```
+
+## Releasing the kit
+
+1. Bump `OverloadKit.version` and add a `CHANGELOG.md` entry in a PR.
+2. Merge. The **Release** workflow tags `v<version>` automatically.
+3. New scaffolds pick up the new version; existing apps bump `minorVersion` when ready.
 
 ## Local commands
 

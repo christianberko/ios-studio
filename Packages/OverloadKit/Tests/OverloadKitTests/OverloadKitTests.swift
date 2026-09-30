@@ -1,4 +1,3 @@
-import Foundation
 import Testing
 @testable import OverloadKit
 
@@ -27,26 +26,4 @@ func massFormatsFixedKilograms() {
 @Test
 func massIsComparable() {
     #expect(Mass(kilograms: 40) < Mass(kilograms: 50))
-}
-
-@Test
-func inMemoryKeyValueStoreRoundTripsCodableValues() throws {
-    struct Prefs: Codable, Equatable {
-        var displayName: String
-        var reps: Int
-    }
-
-    let store = InMemoryKeyValueStore()
-    let prefs = Prefs(displayName: "Squat", reps: 5)
-    try store.set(prefs, forKey: "prefs")
-    #expect(try store.value(forKey: "prefs", as: Prefs.self) == prefs)
-
-    store.removeValue(forKey: "prefs")
-    #expect(try store.value(forKey: "prefs", as: Prefs.self) == nil)
-}
-
-@Test
-func layoutSpacingScaleIsStable() {
-    #expect(LayoutSpacing.sm == 8)
-    #expect(LayoutSpacing.md == 16)
 }
