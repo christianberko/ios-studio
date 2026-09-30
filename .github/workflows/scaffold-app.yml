@@ -40,9 +40,20 @@ jobs:
         run: |
           if [ -z "${GH_TOKEN}" ]; then
             echo "Missing secret SCAFFOLD_TOKEN."
-            echo "Create a PAT that can create repositories under your account,"
+            echo "Create a classic PAT with the 'repo' and 'workflow' scopes,"
             echo "then add it as a repository secret named SCAFFOLD_TOKEN."
             exit 1
+          fi
+          # Pushing the consumer's .github/workflows needs 'workflow'; checking first avoids a half-created repo.
+          SCOPES=$(gh api -i user 2>/dev/null | tr -d '\r' | sed -n 's/^[Xx]-[Oo][Aa]uth-[Ss]copes: //p')
+          if [ -n "$SCOPES" ]; then
+            for scope in repo workflow; do
+              if ! echo ",$SCOPES," | tr -d ' ' | grep -q ",$scope,"; then
+                echo "SCAFFOLD_TOKEN is missing the '$scope' scope (has: $SCOPES)."
+                echo "Edit the token at https://github.com/settings/tokens and add it."
+                exit 1
+              fi
+            done
           fi
           chmod +x Tools/scaffold/scaffold.sh
           ./Tools/scaffold/scaffold.sh \

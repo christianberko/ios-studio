@@ -48,6 +48,11 @@ if [[ -z "$KIT_VERSION" ]]; then
 fi
 BUNDLE_ID="com.christianberko.$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')"
 
+if [[ "${SCAFFOLD_DRY_RUN:-}" != "1" ]] && gh repo view "${OWNER}/${REPO_NAME}" >/dev/null 2>&1; then
+  echo "error: ${OWNER}/${REPO_NAME} already exists; pick another repo-name" >&2
+  exit 1
+fi
+
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/ios-studio-scaffold.XXXXXX")"
 DEST="$WORK/$REPO_NAME"
 trap 'rm -rf "$WORK"' EXIT

@@ -54,7 +54,7 @@ SCAFFOLD_DRY_RUN=1 ./Tools/scaffold/scaffold.sh HabitKit habit-kit private
 
 ## Scaffold via GitHub Actions
 
-1. Create a PAT that can **create repositories** under your account.
+1. Create a classic PAT with the **`repo`** and **`workflow`** scopes (`workflow` is required to push the new app's CI file).
 2. Add it as repo secret **`SCAFFOLD_TOKEN`**.
 3. Actions → **Scaffold App** → Run workflow.
 4. Enter **app name** (e.g. `HabitKit`) and **repo name** (e.g. `habit-kit`).
