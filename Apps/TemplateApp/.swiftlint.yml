@@ -1,12 +1,10 @@
 included:
-  - Packages
-  - Apps
-  - Package.swift
+  - .
 excluded:
-  - "**/.build"
-  - "**/DerivedData"
-  - "**/.swiftpm"
-  - "Apps/**/*.xcodeproj"
+  - .build
+  - DerivedData
+  - .swiftpm
+  - "*.xcodeproj"
 
 opt_in_rules:
   - empty_count

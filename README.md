@@ -10,20 +10,34 @@ Packages/OverloadKit/ # shared SDK sources
 Tools/scaffold/       # creates app + GitHub repo
 Package.swift         # publishes OverloadKit to consumer apps via SPM
 .github/workflows/    # CI + Scaffold App
+ROADMAP.md            # what to do next (first real app)
+CHANGELOG.md          # kit-facing changes
 ```
+
+## OverloadKit (0.2.0)
+
+Shared building blocks. Code moves in here only once a second app needs it.
+
+- `Mass` + fixed formatting
 
 ## Consumer apps
 
 New apps are **separate GitHub repos**, not folders that stay here forever.
 
-They depend on the kit like this (XcodeGen / SPM):
+They depend on a tagged kit release (XcodeGen / SPM):
 
 ```yaml
 packages:
   OverloadKit:
     url: https://github.com/christianberko/ios-studio.git
-    branch: main
+    minorVersion: 0.2.0
 ```
+
+## Releasing the kit
+
+1. Bump `OverloadKit.version` and add a `CHANGELOG.md` entry in a PR.
+2. Merge. The **Release** workflow tags `v<version>` automatically.
+3. New scaffolds pick up the new version; existing apps bump `minorVersion` when ready.
 
 ## Local commands
 
@@ -44,6 +58,9 @@ SCAFFOLD_DRY_RUN=1 ./Tools/scaffold/scaffold.sh HabitKit habit-kit private
 2. Add it as repo secret **`SCAFFOLD_TOKEN`**.
 3. Actions → **Scaffold App** → Run workflow.
 4. Enter **app name** (e.g. `HabitKit`) and **repo name** (e.g. `habit-kit`).
+
+Scaffolded repos ship with SwiftLint + CI. If this factory repo is private, add
+**`OVERLOADKIT_TOKEN`** on the consumer repo so Actions can resolve OverloadKit.
 
 ## Branch protection
 

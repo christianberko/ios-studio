@@ -40,6 +40,12 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/Apps/TemplateApp"
 OWNER="${GITHUB_REPOSITORY_OWNER:-$(gh api user -q .login)}"
 KIT_URL="https://github.com/${OWNER}/ios-studio.git"
+KIT_VERSION="$(sed -n 's/.*static let version = "\([0-9][0-9.]*\)".*/\1/p' \
+  "$ROOT/Packages/OverloadKit/Sources/OverloadKit/OverloadKit.swift")"
+if [[ -z "$KIT_VERSION" ]]; then
+  echo "error: could not read OverloadKit.version" >&2
+  exit 1
+fi
 BUNDLE_ID="com.christianberko.$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')"
 
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/ios-studio-scaffold.XXXXXX")"
@@ -57,11 +63,12 @@ mv "$DEST/TemplateAppTests" "$DEST/${APP_NAME}Tests"
 mv "$DEST/$APP_NAME/TemplateAppApp.swift" "$DEST/$APP_NAME/${APP_NAME}App.swift"
 mv "$DEST/${APP_NAME}Tests/TemplateAppTests.swift" "$DEST/${APP_NAME}Tests/${APP_NAME}Tests.swift"
 
-echo "→ Pointing OverloadKit at $KIT_URL (branch main)"
-python3 - "$DEST/project.yml" "$KIT_URL" <<'PY'
+echo "→ Pointing OverloadKit at $KIT_URL (${KIT_VERSION}, up to next minor)"
+python3 - "$DEST/project.yml" "$KIT_URL" "$KIT_VERSION" <<'PY'
 import pathlib, re, sys
 path = pathlib.Path(sys.argv[1])
 kit_url = sys.argv[2]
+kit_version = sys.argv[3]
 text = path.read_text()
 pattern = re.compile(
     r"packages:\n(?:  #.*\n)*  OverloadKit:\n    path: \.\./\.\.\n",
@@ -70,7 +77,7 @@ pattern = re.compile(
 replacement = f"""packages:
   OverloadKit:
     url: {kit_url}
-    branch: main
+    minorVersion: {kit_version}
 """
 new_text, count = pattern.subn(replacement, text, count=1)
 if count != 1:
@@ -98,7 +105,15 @@ xcodegen generate
 open ${APP_NAME}.xcodeproj
 \`\`\`
 
-Depends on **OverloadKit** via SPM (\`${KIT_URL}\`, branch \`main\`).
+Depends on **OverloadKit** via SPM (\`${KIT_URL}\`, \`${KIT_VERSION}\` up to the next minor).
+Bump \`minorVersion\` in \`project.yml\` to adopt a newer kit release.
+
+## CI
+
+PRs run Lint + Build and Test (see \`.github/workflows/ci.yml\`).
+
+If \`ios-studio\` is private, add a repo secret **\`OVERLOADKIT_TOKEN\`** (PAT with \`repo\` read
+access to ios-studio) so SPM can resolve the package on GitHub Actions.
 EOF
 
 echo "→ Generating Xcode project"

@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Packages/OverloadKit/Sources/OverloadKit/OverloadKit.swift
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Tag kit version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Tag OverloadKit.version if untagged
+        run: |
+          VERSION=$(sed -n 's/.*static let version = "\([0-9][0-9.]*\)".*/\1/p' \
+            Packages/OverloadKit/Sources/OverloadKit/OverloadKit.swift)
+          if [ -z "$VERSION" ]; then
+            echo "Could not read OverloadKit.version" >&2
+            exit 1
+          fi
+          TAG="v$VERSION"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "$TAG already exists; nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "OverloadKit $VERSION"
+          git push origin "$TAG"
+          echo "Created $TAG"

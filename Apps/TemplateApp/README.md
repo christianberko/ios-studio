@@ -6,7 +6,7 @@ Gold-master iOS app for scaffolding new consumer repos.
 
 - SwiftUI app (iPhone, iOS 18+)
 - Local `OverloadKit` package dependency (rewritten to git URL when scaffolded)
-- One unit test
+- Unit tests, SwiftLint config, and a consumer CI workflow
 - XcodeGen `project.yml` (source of truth for the `.xcodeproj`)
 
 ## Regenerate the Xcode project
