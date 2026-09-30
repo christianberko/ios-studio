@@ -24,4 +24,4 @@ From the repo root (requires `gh` auth that can create repos):
 ./Tools/scaffold/scaffold.sh HabitKit habit-kit private
 ```
 
-Or run the **Scaffold App** workflow in GitHub Actions (needs `SCAFFOLD_TOKEN` secret).
+Or run the **Scaffold App** workflow in GitHub Actions (needs a `SCAFFOLD_TOKEN` secret with `repo` + `workflow` scopes).
